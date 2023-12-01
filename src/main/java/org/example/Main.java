@@ -1,6 +1,137 @@
 package org.example;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+        try
+        {
+            String url = "http://universities.hipolabs.com/search?country=Brazil";
+            List<UniversidadeObjectMapper> universidadeObjectMapperList = gerarRequisicao(url);
+
+            for (UniversidadeObjectMapper universidadeObjectMapper : universidadeObjectMapperList)
+            {
+                System.out.println(universidadeObjectMapper);
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private static List<UniversidadeObjectMapper> gerarRequisicao(String url) throws Exception {
+        URL urlCriada = new URL(url);
+        HttpURLConnection connection = (HttpURLConnection) urlCriada.openConnection();
+        connection.setRequestMethod("GET");
+
+        int responseCode = connection.getResponseCode();
+        if (responseCode == HttpURLConnection.HTTP_OK)
+        {
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            List<UniversidadeObjectMapper> universidadeObjectMapperList = objectMapper.readValue(connection.getInputStream(),
+                    objectMapper.getTypeFactory().constructCollectionType(List.class, UniversidadeObjectMapper.class));
+
+            return universidadeObjectMapperList;
+        }
+        else
+        {
+            throw new RuntimeException("Falha na requisição, Código de resposta: " + responseCode);
+        }
+    }
+}
+/*--------------------------------------------------------------------------------------------*/
+/**package org.example;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+        try
+        {
+            String url = "http://universities.hipolabs.com/search?country=Brazil";
+
+            List<Universidade> universidades = gerarRequisicao(url);
+
+            for(Universidade universidade : universidades)
+            {
+                System.out.println(universidade);
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private static List<Universidade> gerarRequisicao(String url) throws Exception
+    {
+        URL urlCriada = new URL(url);
+        HttpURLConnection connection = (HttpURLConnection) urlCriada.openConnection();
+
+        connection.setRequestMethod("GET");
+
+        int responseCode = connection.getResponseCode();
+
+        if (responseCode == HttpURLConnection.HTTP_OK)
+        {
+            BufferedReader entrada = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String entradaLine;
+            StringBuilder conteudo = new StringBuilder();
+
+            while ((entradaLine = entrada.readLine()) != null)
+            {
+                conteudo.append(entradaLine);
+            }
+            entrada.close();
+
+            JSONArray jsonArray = new JSONArray(conteudo.toString());
+
+            List<Universidade> universidades = new ArrayList<>();
+
+            for (int i = 0; i < jsonArray.length(); i++)
+            {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String nome = jsonObject.getString("name");
+                String urlUniversidade = "";
+                if (jsonObject.has("web_pages") && jsonObject.get("web_pages") instanceof JSONArray)
+                {
+                    JSONArray webPagesArray = jsonObject.getJSONArray("web_pages");
+                    if (webPagesArray.length() > 0)
+                    {
+                        urlUniversidade = webPagesArray.getString(0);
+                    }
+                }
+                Universidade universidade = new Universidade(nome, urlUniversidade);
+                universidades.add(universidade);
+            }
+
+            return universidades;
+        }
+        else
+        {
+            throw new RuntimeException("Falha na requisição, Código de resposta: " + responseCode);
+        }
+    }
+}*/
+
+/*--------------------------------------------------------------------------------------------*/
+/**package org.example;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.HttpURLConnection;
 import java.net.URL;
 public class Main {
@@ -40,8 +171,9 @@ public class Main {
             throw new RuntimeException("Falha na solicitação da requisição! Código: " + responseCode);
         }
     }
-}
+}*/
 
+/*--------------------------------------------------------------------------------------------*/
 /*
     REQUEST COM HttpURLConnection;
 **/
@@ -120,6 +252,7 @@ public class Main {
     }
 }*/
 
+/*--------------------------------------------------------------------------------------------*/
 /**
 
 package org.example;

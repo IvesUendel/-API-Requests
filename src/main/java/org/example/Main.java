@@ -1,5 +1,53 @@
 package org.example;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.net.HttpURLConnection;
+import java.net.URL;
+public class Main {
+    public static void main(String[] args)
+    {
+        try
+        {
+            String nome = "Talita";
+            String url = "https://api.agify.io/?name=" + nome;
+            PessoaObjectMapper pessoaObjectMapper = gerarRequisicao(url);
+
+            System.out.println(pessoaObjectMapper);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private static PessoaObjectMapper gerarRequisicao(String url) throws Exception
+    {
+        URL urlCriada = new URL(url);
+        HttpURLConnection connection = (HttpURLConnection) urlCriada.openConnection();
+        connection.setRequestMethod("GET");
+
+        int responseCode = connection.getResponseCode();
+        if (responseCode == HttpURLConnection.HTTP_OK)
+        {
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            PessoaObjectMapper pessoaObjectMapper = objectMapper.readValue(connection.getInputStream(), PessoaObjectMapper.class);
+
+            return pessoaObjectMapper;
+        }
+        else
+        {
+            throw new RuntimeException("Falha na solicitação da requisição! Código: " + responseCode);
+        }
+    }
+}
+
+/*
+    REQUEST COM HttpURLConnection;
+**/
+
+/**package org.example;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -70,13 +118,11 @@ public class Main {
             throw new RuntimeException("Falha na requisição, Código de resposta: " + responseCode);
         }
     }
-}
+}*/
 
+/**
 
-/*
-    REQUEST COM HttpURLConnection;
-**/
-/*package org.example;
+package org.example;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

@@ -1,4 +1,4 @@
-package org.example;
+/*package org.example;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,4 +15,4 @@ public class RespostaJSON
                 "respostaJson='" + getRespostaJson() + '\'' +
                 '}';
     }
-}
+}*/

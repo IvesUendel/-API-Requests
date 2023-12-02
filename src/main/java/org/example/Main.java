@@ -2,6 +2,125 @@ package org.example;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+public class Main {
+    public static void main(String[] args)
+    {
+        try {
+            // URL da API
+            String url = "https://jsonplaceholder.typicode.com/posts";
+
+            // Criando um objeto User
+            User user = new User(1, 1, "delectus aut autem", false);
+
+            // Convertendo o objeto User para JSON usando ObjectMapper
+            String jsonInputString = convertObjectToJson(user);
+
+            // Fazendo a requisição POST
+            fazerRequisicao(url, jsonInputString);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void fazerRequisicao(String url, String jsonInputString) throws Exception
+    {
+        // Criando a URL
+        URL obj = new URL(url);
+
+        // Abrindo a conexão HTTP
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+        // Configurando o método da requisição
+        con.setRequestMethod("POST");
+
+        // Configurando o cabeçalho
+        con.setRequestProperty("Content-Type", "application/json");
+        con.setDoOutput(true);
+
+        // Enviando o JSON no corpo da requisição
+        try (OutputStream os = con.getOutputStream()) {
+            byte[] input = jsonInputString.getBytes();
+            os.write(input, 0, input.length);
+        }
+
+        // Obtendo a resposta
+        int responseCode = con.getResponseCode();
+        if (responseCode == HttpURLConnection.HTTP_CREATED) { // Código 201 indica que o recurso foi criado
+            System.out.println("Requisição POST enviada com sucesso. Código de resposta: " + responseCode);
+        } else {
+            System.out.println("Falha na requisição POST. Código de resposta: " + responseCode);
+        }
+    }
+
+    private static String convertObjectToJson(User user) throws Exception
+    {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.writeValueAsString(user);
+    }
+}
+
+/*--------------------------------------------------------------------------------------------*/
+/**package org.example;
+
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+
+public class Main {
+    public static void main(String[] args)
+    {
+        try
+        {
+            String url = "https://jsonplaceholder.typicode.com/posts";
+
+            //GERANDO O DOCUMENTO JSON COM OS VALORES
+            String jsonEntradaString = "{ \"userId\": 1, \"id\": 1, \"title\": \"delectus aut autem\", \"completed\": false }";
+
+            gerarRequisicao(url, jsonEntradaString);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private static void gerarRequisicao(String url, String jsonEntradaString) throws Exception
+    {
+        URL urlCriada = new URL(url);
+        HttpURLConnection connection = (HttpURLConnection) urlCriada.openConnection();
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setDoOutput(true);
+
+        try (OutputStream outputStream = connection.getOutputStream())
+        {
+            byte[] entrada = jsonEntradaString.getBytes(StandardCharsets.UTF_8);
+            outputStream.write(entrada, 0, entrada.length);
+        }
+
+        int responseCode = connection.getResponseCode();
+        if (responseCode == HttpURLConnection.HTTP_CREATED)
+        {
+            System.out.println("Requisição POST enviada com sucesso. Código de resposta: " + responseCode);
+        }
+        else
+        {
+            System.out.println("Falha na requisição POST. Código de resposta: " + responseCode);
+        }
+    }
+}
+/*--------------------------------------------------------------------------------------------*/
+
+/**package org.example;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
@@ -46,6 +165,7 @@ public class Main {
     }
 }
 /*--------------------------------------------------------------------------------------------*/
+
 /**package org.example;
 
 import org.json.JSONArray;
